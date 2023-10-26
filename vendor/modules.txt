@@ -1,0 +1,14 @@
+# github.com/benbjohnson/clock v1.3.0
+## explicit; go 1.15
+github.com/benbjohnson/clock
+# github.com/juju/ratelimit v1.0.2
+## explicit
+github.com/juju/ratelimit
+# go.uber.org/ratelimit v0.3.0
+## explicit; go 1.18
+go.uber.org/ratelimit
+# golang.org/x/time v0.3.0
+## explicit
+golang.org/x/time/rate
+# gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
+## explicit; go 1.11

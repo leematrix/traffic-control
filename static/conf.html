@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic-Control Config Setting Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        label {
+            margin-right: 10px;
+            width: 160px;
+        }
+        input, select {
+            margin-right: 10px;
+            width: 100px;
+        }
+    </style>
+    <script>
+        function onButtonClick() {
+            const openLog = document.getElementById("OpenLog");
+            const queueCacheLen = document.getElementById("QueueCacheLen");
+            const openTC = document.getElementById("OpenTC");
+            const lossRate = document.getElementById("LossRate");
+            const delayMS = document.getElementById("DelayMS");
+            const startBitrate = document.getElementById("StartBitrate");
+            const upperBitrate = document.getElementById("UpperBitrate");
+            const lowerBitrate = document.getElementById("LowerBitrate");
+            const autoAdjustBwInterval = document.getElementById("AutoAdjustBwInterval");
+
+            fetch("http://127.0.0.1:8099/setConf", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    openLog: openLog.value === "ON",
+                    queueCacheLen:parseInt(queueCacheLen.value),
+                    openTC:openTC.value === "ON",
+                    lossRate:parseInt(lossRate.value),
+                    delayMS:parseInt(delayMS.value),
+                    startBitrate:parseInt(startBitrate.value),
+                    upperBitrate:parseInt(upperBitrate.value),
+                    lowerBitrate:parseInt(lowerBitrate.value),
+                    autoAdjustBwInterval:parseInt(autoAdjustBwInterval.value),
+                })
+            })
+                .then(data => console.log("Success:", data))
+                .catch(error => console.error("Error:", error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Traffic-Control Config Setting</h1>
+    <div class="input-container">
+        <label for="OpenLog">OpenLog:</label>
+        <select id="OpenLog" >
+            <option value="ON" selected>ON</option>
+            <option value="OFF">OFF</option>
+        </select>
+    </div>
+    <div class="input-container">
+        <label for="QueueCacheLen">QueueCacheLen:</label>
+        <input type="text" id="QueueCacheLen" value="1024" />
+    </div>
+    <div class="input-container">
+        <label for="OpenTC">OpenTC:</label>
+        <select id="OpenTC" >
+            <option value="ON" selected>ON</option>
+            <option value="OFF">OFF</option>
+        </select>
+    </div>
+    <div class="input-container">
+        <label for="LossRate">LossRate:</label>
+        <input type="text" id="LossRate" value="5"/>
+    </div>
+    <div class="input-container">
+        <label for="DelayMS">DelayMilliSec:</label>
+        <input type="text" id="DelayMS" value="20"/>
+    </div>
+    <div class="input-container">
+        <label for="StartBitrate">StartBitrate:</label>
+        <input type="text" id="StartBitrate" value="1500"/>
+    </div>
+    <div class="input-container">
+        <label for="UpperBitrate">UpperBitrate:</label>
+        <input type="text" id="UpperBitrate" value="6000"/>
+    </div>
+    <div class="input-container">
+        <label for="LowerBitrate">LowerBitrate:</label>
+        <input type="text" id="LowerBitrate" value="1500"/>
+    </div>
+    <div class="input-container">
+    <label for="AutoAdjustBwInterval">AutoAdjustBwInterval:</label>
+    <input type="text" id="AutoAdjustBwInterval" value="10"/>
+    </div>
+    <button onclick="onButtonClick()">Save</button>
+</body>
+</html>
