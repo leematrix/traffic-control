@@ -60,7 +60,7 @@ func startUploader() {
 					data.CloseWsClient(ws)
 					ws = reDialWs()
 				} else {
-					log.Println("Upload msg to gateway successful, len:", len(uploaderChan))
+					//log.Println("Upload msg to gateway successful, len:", len(uploaderChan))
 				}
 			}
 		}
