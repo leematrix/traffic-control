@@ -61,7 +61,7 @@ func StartHttpServer() {
 	mux.HandleFunc("/setConf", setConf)
 
 	s := &http.Server{
-		Addr:    fmt.Sprintf(":%d", conf.HttpServerPort),
+		Addr:    fmt.Sprintf("0.0.0.0:%d", conf.HttpServerPort),
 		Handler: mux,
 	}
 

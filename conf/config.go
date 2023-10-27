@@ -1,15 +1,16 @@
 package conf
 
 type Option struct {
-	OpenLog              bool `json:"openLog"`
-	QueueCacheLen        int  `json:"queueCacheLen"`
-	OpenTC               bool `json:"openTC"`
-	LossRate             int  `json:"lossRate"`
-	DelayMS              int  `json:"delayMS"`
-	StartBitrate         int  `json:"startBitrate"`
-	UpperBitrate         int  `json:"upperBitrate"`
-	LowerBitrate         int  `json:"lowerBitrate"`
-	AutoAdjustBwInterval int  `json:"autoAdjustBwInterval"`
+	OpenLog              bool   `json:"openLog"`
+	QueueCacheLen        int    `json:"queueCacheLen"`
+	OpenTC               bool   `json:"openTC"`
+	LossRate             int    `json:"lossRate"`
+	DelayMS              int    `json:"delayMS"`
+	StartBitrate         int    `json:"startBitrate"`
+	UpperBitrate         int    `json:"upperBitrate"`
+	LowerBitrate         int    `json:"lowerBitrate"`
+	AutoAdjustBwInterval int    `json:"autoAdjustBwInterval"`
+	StatsServerUrl       string `json:"statsServerUrl"`
 }
 
 var Options = Option{
@@ -22,6 +23,7 @@ var Options = Option{
 	UpperBitrate:         6000,
 	LowerBitrate:         1500,
 	AutoAdjustBwInterval: 10,
+	StatsServerUrl:       "ws://127.0.0.1:8090/ws/tc",
 }
 
 // Non-Configurable Items

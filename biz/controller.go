@@ -68,10 +68,6 @@ func KbpsToBPS(kbps int64) int64 {
 }
 
 func autoAdjustBandwidth() {
-	if !conf.Options.OpenTC {
-		return
-	}
-
 	go func() {
 		rateLimiter, _ = NewJujuLimiter(KbpsToBPS(int64(conf.Options.StartBitrate)))
 		defer rateLimiter.Stop()
@@ -86,6 +82,10 @@ func autoAdjustBandwidth() {
 				if conf.RealBandwidth < conf.Options.LowerBitrate {
 					conf.RealBandwidth = conf.Options.LowerBitrate
 				}
+				uploaderSend(uploaderMessage{
+					RealBandwidth: conf.RealBandwidth,
+					RecvQueueLen:  len(RecvChan),
+				})
 				err := rateLimiter.UpdateBandwidth(KbpsToBPS(int64(conf.RealBandwidth)))
 				if err != nil {
 					log.Printf("Update Bandwidth err:%v", err)
@@ -99,22 +99,23 @@ func autoAdjustBandwidth() {
 
 func mainLoop() {
 	go func() {
-		ticker := time.NewTicker(1 * time.Second)
 		for {
 			select {
 			case msg := <-RecvChan:
 				if controlStrategy(msg) {
 					sendChan <- msg
 				}
-			case <-ticker.C:
-				//log.Printf("recv queue len: [%d], cur bw: [%d] kbps.\n", len(recvChan), conf.RealBandwidth)
-				//log.Printf("send queue len: [%d], cur bw: [%d] kbps.\n", len(sendChan), conf.RealBandwidth)
+				uploaderSend(uploaderMessage{
+					RealBandwidth: conf.RealBandwidth,
+					RecvQueueLen:  len(RecvChan),
+				})
 			}
 		}
 	}()
 }
 
 func Start() {
+	startUploader()
 	autoAdjustBandwidth()
 	relayServerStart()
 	mainLoop()
