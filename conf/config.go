@@ -10,7 +10,7 @@ type Option struct {
 	UpperBitrate         int    `json:"upperBitrate"`
 	LowerBitrate         int    `json:"lowerBitrate"`
 	AutoAdjustBwInterval int    `json:"autoAdjustBwInterval"`
-	StatsServerUrl       string `json:"statsServerUrl"`
+	StatsServerAddr      string `json:"statsServerAddr"`
 }
 
 var Options = Option{
@@ -23,7 +23,7 @@ var Options = Option{
 	UpperBitrate:         6000,
 	LowerBitrate:         1500,
 	AutoAdjustBwInterval: 10,
-	StatsServerUrl:       "ws://127.0.0.1:8090/ws/tc",
+	StatsServerAddr:      "ws://127.0.0.1:8090/ws/tc",
 }
 
 // Non-Configurable Items

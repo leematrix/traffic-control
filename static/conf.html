@@ -33,7 +33,7 @@
             const upperBitrate = document.getElementById("UpperBitrate");
             const lowerBitrate = document.getElementById("LowerBitrate");
             const autoAdjustBwInterval = document.getElementById("AutoAdjustBwInterval");
-            const statsServerUrl = document.getElementById("StatsServerUrl");
+            const statsServerAddr = document.getElementById("StatsServerAddr");
 
             fetch("http://127.0.0.1:8099/setConf", {
                 method: "POST",
@@ -50,7 +50,7 @@
                     upperBitrate:parseInt(upperBitrate.value),
                     lowerBitrate:parseInt(lowerBitrate.value),
                     autoAdjustBwInterval:parseInt(autoAdjustBwInterval.value),
-                    statsServerUrl:statsServerUrl.value,
+                    statsServerAddr:statsServerAddr.value,
                 })
             })
                 .then(data => console.log("Success:", data))
@@ -103,8 +103,8 @@
         <input type="text" id="AutoAdjustBwInterval" value="10"/>
     </div>
     <div class="input-container">
-        <label for="StatsServerUrl">StatsServerUrl:</label>
-        <input type="text" id="StatsServerUrl" value="ws://127.0.0.1:8090/ws/tc"/>
+        <label for="StatsServerAddr">StatsServerAddr:</label>
+        <input type="text" id="StatsServerAddr" value="127.0.0.1"/>
     </div>
     <button onclick="onButtonClick()">Save</button>
 </body>

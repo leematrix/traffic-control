@@ -19,7 +19,9 @@ func NewWsClient(url string) (wsCli *websocket.Conn, err error) {
 }
 
 func CloseWsClient(cli *websocket.Conn) {
-	if err := cli.Close(); err != nil {
-		log.Println("close ws client failed, err: ", err)
+	if cli != nil {
+		if err := cli.Close(); err != nil {
+			log.Println("close ws client failed, err: ", err)
+		}
 	}
 }
