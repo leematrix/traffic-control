@@ -1,5 +1,0 @@
-2023/10/26 17:37:20 http_server.go:68: Start Http Server :8099
-2023/10/26 17:37:20 controller.go:79: Start bandwidth: [6000] kbps.
-2023/10/26 17:37:20 recv_server.go:29: Start Recv Server 0.0.0.0:8889
-2023/10/26 17:37:30 controller.go:93: Update bandwidth: [1500] kbps, recv chan len: [0], send chan len:[0].
-2023/10/26 17:37:40 controller.go:93: Update bandwidth: [1500] kbps, recv chan len: [0], send chan len:[0].
