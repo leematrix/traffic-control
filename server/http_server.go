@@ -22,6 +22,7 @@ func getConf(w http.ResponseWriter, r *http.Request) {
 
 func setOptions(cfg *conf.Option) {
 	conf.Options = *cfg
+	close(biz.RecvChan)
 	biz.RecvChan = make(chan biz.TcMessage, conf.Options.QueueCacheLen)
 	if biz.AdjustTicker != nil {
 		biz.AdjustTicker = time.NewTicker(time.Duration(conf.Options.AutoAdjustBwInterval) * time.Second)

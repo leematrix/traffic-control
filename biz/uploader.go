@@ -19,6 +19,8 @@ var uploaderChan = make(chan uploaderMessage, 1024)
 
 func reDialWs() *websocket.Conn {
 	for {
+		close(uploaderChan)
+		uploaderChan = make(chan uploaderMessage, 1024)
 		url := fmt.Sprintf("ws://%s:8090/ws/tc", conf.Options.StatsServerAddr)
 		cli, err := data.NewWsClient(url)
 		if err == nil {
@@ -58,7 +60,7 @@ func startUploader() {
 					data.CloseWsClient(ws)
 					ws = reDialWs()
 				} else {
-					log.Println("Upload msg to gateway successful")
+					log.Println("Upload msg to gateway successful, len:", len(uploaderChan))
 				}
 			}
 		}
@@ -68,8 +70,7 @@ func startUploader() {
 func uploaderSend(msg uploaderMessage) {
 	select {
 	case uploaderChan <- msg:
-		return
-	default:
+	case <-time.After(1 * time.Millisecond):
 		log.Println("uploaderChan is full.")
 	}
 }

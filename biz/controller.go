@@ -97,14 +97,12 @@ func autoAdjustBandwidth() {
 	}()
 }
 
-func mainLoop() {
+func updateRecvQueueLen() {
 	go func() {
+		ticker := time.NewTicker(10 * time.Millisecond)
 		for {
 			select {
-			case msg := <-RecvChan:
-				if controlStrategy(msg) {
-					sendChan <- msg
-				}
+			case <-ticker.C:
 				uploaderSend(uploaderMessage{
 					RealBandwidth: conf.RealBandwidth,
 					RecvQueueLen:  len(RecvChan),
@@ -114,8 +112,22 @@ func mainLoop() {
 	}()
 }
 
+func mainLoop() {
+	go func() {
+		for {
+			select {
+			case msg := <-RecvChan:
+				if controlStrategy(msg) {
+					sendChan <- msg
+				}
+			}
+		}
+	}()
+}
+
 func Start() {
 	startUploader()
+	updateRecvQueueLen()
 	autoAdjustBandwidth()
 	relayServerStart()
 	mainLoop()
