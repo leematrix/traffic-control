@@ -10,17 +10,17 @@ import (
 	"traffic-control/data"
 )
 
-type uploaderMessage struct {
+type UploaderMessage struct {
 	RealBandwidth int `json:"realBandwidth"`
 	RecvQueueLen  int `json:"recvQueueLen"`
 }
 
-var uploaderChan = make(chan uploaderMessage, 1024)
+var uploaderChan = make(chan UploaderMessage, 1024)
 
 func reDialWs() *websocket.Conn {
 	for {
 		close(uploaderChan)
-		uploaderChan = make(chan uploaderMessage, 1024)
+		uploaderChan = make(chan UploaderMessage, 1024)
 		url := fmt.Sprintf("ws://%s:8090/ws/tc", conf.Options.StatsServerAddr)
 		cli, err := data.NewWsClient(url)
 		if err == nil {
@@ -43,7 +43,7 @@ func startUploader() {
 		}
 		defer data.CloseWsClient(ws)
 
-		uploaderSend(uploaderMessage{
+		UploaderSend(UploaderMessage{
 			RealBandwidth: conf.RealBandwidth,
 			RecvQueueLen:  len(RecvChan),
 		})
@@ -67,7 +67,7 @@ func startUploader() {
 	}()
 }
 
-func uploaderSend(msg uploaderMessage) {
+func UploaderSend(msg UploaderMessage) {
 	select {
 	case uploaderChan <- msg:
 	case <-time.After(1 * time.Millisecond):

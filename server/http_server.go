@@ -22,10 +22,19 @@ func getConf(w http.ResponseWriter, r *http.Request) {
 
 func setOptions(cfg *conf.Option) {
 	conf.Options = *cfg
+	conf.RealBandwidth = conf.Options.StartBitrate
+	err := biz.RateLimiter.UpdateBandwidth(biz.KbpsToBPS(int64(conf.RealBandwidth)))
+	if err != nil {
+		log.Printf("Update Bandwidth err:%v", err)
+	}
+	biz.UploaderSend(biz.UploaderMessage{
+		RealBandwidth: conf.RealBandwidth,
+		RecvQueueLen:  len(biz.RecvChan),
+	})
 	close(biz.RecvChan)
 	biz.RecvChan = make(chan biz.TcMessage, conf.Options.QueueCacheLen)
 	if biz.AdjustTicker != nil {
-		biz.AdjustTicker = time.NewTicker(time.Duration(conf.Options.AutoAdjustBwInterval) * time.Second)
+		biz.AdjustTicker.Reset(time.Duration(conf.Options.AutoAdjustBwInterval) * time.Second)
 	}
 	log.Println("Update options:", conf.Options)
 }

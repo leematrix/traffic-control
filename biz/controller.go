@@ -19,7 +19,7 @@ type TcMessage struct {
 var RecvChan = make(chan TcMessage, conf.Options.QueueCacheLen)
 var AdjustTicker *time.Ticker
 
-var rateLimiter Limiter
+var RateLimiter Limiter
 
 var lossCount = 0
 
@@ -37,7 +37,7 @@ func execDelay(ts time.Duration) {
 }
 
 func execLimitRate(msgLen int64) {
-	err := rateLimiter.Wait(msgLen)
+	err := RateLimiter.Wait(msgLen)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
@@ -69,8 +69,8 @@ func KbpsToBPS(kbps int64) int64 {
 
 func autoAdjustBandwidth() {
 	go func() {
-		rateLimiter, _ = NewJujuLimiter(KbpsToBPS(int64(conf.Options.StartBitrate)))
-		defer rateLimiter.Stop()
+		RateLimiter, _ = NewJujuLimiter(KbpsToBPS(int64(conf.Options.StartBitrate)))
+		defer RateLimiter.Stop()
 
 		log.Printf("Start bandwidth: [%d] kbps.\n", conf.Options.StartBitrate)
 		AdjustTicker = time.NewTicker(time.Duration(conf.Options.AutoAdjustBwInterval) * time.Second)
@@ -82,14 +82,14 @@ func autoAdjustBandwidth() {
 				if conf.RealBandwidth < conf.Options.LowerBitrate {
 					conf.RealBandwidth = conf.Options.LowerBitrate
 				}
-				uploaderSend(uploaderMessage{
-					RealBandwidth: conf.RealBandwidth,
-					RecvQueueLen:  len(RecvChan),
-				})
-				err := rateLimiter.UpdateBandwidth(KbpsToBPS(int64(conf.RealBandwidth)))
+				err := RateLimiter.UpdateBandwidth(KbpsToBPS(int64(conf.RealBandwidth)))
 				if err != nil {
 					log.Printf("Update Bandwidth err:%v", err)
 				}
+				UploaderSend(UploaderMessage{
+					RealBandwidth: conf.RealBandwidth,
+					RecvQueueLen:  len(RecvChan),
+				})
 				log.Printf("Update bandwidth: [%d] kbps, recv chan len: [%d], send chan len:[%d].\n",
 					conf.RealBandwidth, len(RecvChan), len(sendChan))
 			}
@@ -103,7 +103,7 @@ func updateRecvQueueLen() {
 		for {
 			select {
 			case <-ticker.C:
-				uploaderSend(uploaderMessage{
+				UploaderSend(UploaderMessage{
 					RealBandwidth: conf.RealBandwidth,
 					RecvQueueLen:  len(RecvChan),
 				})
